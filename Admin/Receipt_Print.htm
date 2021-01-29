@@ -1,0 +1,149 @@
+<!--#include file="loggedin.asp"-->
+<!--#include file="dsn.asp"-->
+<!--#include file="common/SQL_CN.asp"-->
+
+
+<HTML>
+<HEAD>
+
+<%
+
+AddID = request("ID")
+Operator = Trim(request("Operator"))
+
+If (AddID <> "") Then
+	  SQL = "select * from invoices left join customers ON invoices.CustomerID = Customers.ID WHERE invoices.ID = " & AddID
+	  Set RS = SQLCN.Execute(SQL)
+
+     if (RS.EOF) then
+       Response.Write "Invoice Not found = " & AddID
+ 	   Response.Write "<BR>"
+ 	   Response.End
+     end if
+
+     totIncVat= RS("TotalInclVAT")
+     if (Not IsNumeric(totIncVat) ) then totIncVat = 0 end if
+	 tot = totIncVat/1.175
+	 vat = totIncVat - tot
+
+	 totIncVat = FormatNumber(totIncVat, 2)
+	 tot = FormatNumber(tot, 2)
+	 vat = FormatNumber(vat, 2)
+
+
+End If
+
+%>
+
+
+<STYLE>
+P.c_invoice{
+ margin-left: '25%'; color: '#000000';
+ font-size:30;
+}
+
+P.c_describe {
+color : black;
+border-style: groove;
+margin-right: '30%';
+}
+
+P.c_small {
+margin-left: '10%';
+font-size:12;
+color : grey;
+
+}
+
+P.c_breakdown
+{
+margin-left: '20%';
+}
+
+
+</STYLE>
+<!------------------------------------------------------------------------------------------------>
+
+
+
+</HEAD>
+<BODY>
+
+<p class=MsoNormal style='margin-top:12.0pt;mso-pagination:none;tab-stops:75.0pt;
+mso-layout-grid-align:none;text-autospace:none'><span lang=EN-US
+style='font-size:10.0pt;font-family:Arial;mso-ansi-language:EN-US'><span
+style='mso-tab-count:1'> </span></span><b><span
+lang=EN-US style='font-size:36.0pt;font-family:"Book Antiqua";mso-bidi-font-family:
+"Book Antiqua";color:#006231;mso-ansi-language:EN-US'>
+
+&nbsp;
+Micro Men Ltd.</span></b><b><span
+lang=EN-US style='font-size:45.5pt;font-family:"Book Antiqua";mso-bidi-font-family:
+"Book Antiqua";color:#006231;mso-ansi-language:EN-US'><o:p></o:p></span></b></p>
+
+
+
+
+
+<p class=MsoNormal><span style='font-size:12.0pt;font-family:"Century Gothic";color:blue'>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+(Order <span class=GramE>a</span> handyman.com)<o:p></o:p></span></p>
+
+
+15 OAKWOOD DRIVE  &nbsp; &nbsp; &nbsp; &nbsp;   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Tel: 0208 24 24 825 <BR>
+HA8 9LG, EDGWARE  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+Email:  admin@micromen.co.uk <BR>
+ &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 
+<a href="www.orderAhandyman.com">  www.orderAhandyman.com </a><BR>
+
+
+
+
+
+<P class=c_invoice>
+Receipt No: <%= AddID %>
+</P>
+
+Customer:<%= RS("Title")%>&nbsp; <%= RS("FirstName") %> &nbsp; <%= RS("Surname") %> <BR>
+Address:
+<%= RS("Address")%>  ,<%= RS("PostCode") %>
+
+
+<BR>
+<BR>
+
+<b><span
+lang=EN-US style='font-size:36.0pt;font-family:"Monotype Corsiva";mso-bidi-font-family:
+"Monotype Corsiva";color:#006231'>Received with thanks</span></b>
+
+
+
+<P class=c_breakdown>
+		
+		<BR>
+        Amount Received  &nbsp; &nbsp; &nbsp;                            &pound; <%= totIncVat %> <BR>
+</P>
+<BR>
+
+
+
+
+<p class=MsoNormal style='margin-top:14.75pt;mso-pagination:none;tab-stops:
+25.95pt;mso-layout-grid-align:none;text-autospace:none'><b>
+
+<span lang=EN-US style='font-size:10.0pt;font-family:"Monotype Corsiva";mso-bidi-font-family:
+"Monotype Corsiva";color:#006231;mso-ansi-language:EN-US'><span
+style='mso-tab-count:2'> </span></span></b><b><span lang=EN-US
+style='font-family:"Monotype Corsiva";mso-bidi-font-family:"Monotype Corsiva";
+color:#006231;mso-ansi-language:EN-US'>&nbsp; &nbsp; &nbsp; &nbsp; Handyman, Man & Van Small Furniture Removals, Building services
+&amp; Property Maintenance<o:p></o:p></span></b></p>
+
+<P class=c_small>
+Company Number 577 5942   VAT 882 060626 Reg Office 112 Station Rd, HA8 7BJ
+</P>
+
+</BODY>
+</HTML>
+<!--#include file="dsn2.asp"-->

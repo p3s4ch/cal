@@ -1,0 +1,58 @@
+USE [ruzvolk]
+GO
+/****** Object:  StoredProcedure [dbo].[blockBook]    Script Date: 12/10/2007 23:19:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--truncate table cEvents
+--DROP PROC blockBook
+/*
+blockBook '1 dec 2007', '1 sep 2008' ,7,22,'Gilon' ,'available',-1,0
+go
+blockBook '1 dec 2007', '1 sep 2008' ,7,22,'Ronit' ,'available',-1,0
+go
+blockBook '1 dec 2007', '1 sep 2008' ,7,22,'Yanik' ,'available',-1,0
+go
+blockBook '1 dec 2007', '1 sep 2008' ,7,22,'Chester' ,'available',-1,0
+*/
+create procedure [dbo].[blockBook](@rangeFrom datetime,@rangeTo datetime,
+                           @startHr int ,
+                           @endHr int,
+                           @operator varchar(50)='Gilon',
+                           @category varchar(50)='avail', 
+						   @Assigned  int =-1, @CatA int =1  ,@CatB int =0, @CustomerID int =-1, 
+						   
+						   @Office  varchar(250) = '', @Details varchar(250) = '' ,            
+						   @BillTotal FLOAT = 0.0,
+                           @SiteAddress varchar(50)='',  @SitePostCode varchar(50)='', 
+                           @SameAsBill int=0 , @siteId int= -1 ,@duration int=30)
+as
+begin
+
+	declare @start datetime
+	declare @end datetime
+	set     @start  = @rangeFrom
+	set		@end = DATEADD (minute,@duration,@start)  
+
+	while   @end   < @rangeTo
+	begin 
+        
+        if (Datepart(hh,@start) > @startHr) and (Datepart(hh,@endHr) < 22)
+         begin
+		insert into cEvents ([StartTime], [EndTime] ,[Details],[Category],
+					   	    Assigned,[CatA] ,[CatB] ,[CustomerID],[Updated],
+                            Office,BillTotal,	
+						    [SiteAddress],	[SitePostCode],	[SameAsBill] ,	[siteId] ,	[Operator]) 
+
+		values		 (@start,@end, @Details, @category,
+                      @Assigned,@CatA, @CatB,@CustomerID,getDate(),
+                      @Office,@BillTotal,
+                      @SiteAddress,	@SitePostCode,	@SameAsBill ,	@siteId ,	@operator) 
+        end
+   
+		set @start=@end
+		set @end = DATEADD (minute,@duration,@start)  
+	end
+
+end

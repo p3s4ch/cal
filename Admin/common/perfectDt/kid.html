@@ -1,0 +1,40 @@
+
+<%
+iYear=request("iYear")
+Response.Write iYear
+
+
+
+
+%>
+
+
+<script>
+
+function send( iDay,iMonth,iYear ){
+
+    window.opener.document.forms['test'].Day.value = iDay;
+    window.opener.document.forms['test'].Month.value = iMonth;
+    window.opener.document.forms['test'].Year.value = iYear;
+}
+
+function Close(){
+    window.close();
+}
+
+
+<form>
+
+<input type="button" value="4th" onClick="return send(1,2,3)">
+<a href="" onClick="return send(1,2,3)"> 6th </a>
+
+
+<input type="button" value="Close" onClick="Close()">
+
+
+</form>
+
+
+
+
+
